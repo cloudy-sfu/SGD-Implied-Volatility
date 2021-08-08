@@ -19,7 +19,7 @@ for init_sigma in np.linspace(0.1, 1, 7):
     for i in range(n_steps):
         vega[:, i] = black_scholes_call_value_derivative(s, k, t, r, sigma[:, i])
         sigma[:, i+1] = sigma[:, i] - \
-            (black_scholes_call_value(s, k, t, r, sigma[:, i]) - c) / np.maximum(vega[:, i], 1e-7)
+            (black_scholes_call_value(s, k, t, r, sigma[:, i]) - c) / vega[:, i]
         c_hat[:, i] = black_scholes_call_value(s, k, t, r, sigma[:, i+1])
 
     with open(f"raw/c-hat/newton-{n_steps}-{format(init_sigma, '.2f')}", "wb") as f:
