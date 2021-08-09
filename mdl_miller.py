@@ -21,10 +21,6 @@ sigma = np.abs(sigma)  # convert complex64 to float32
 c_hat = black_scholes_call_value(s, k, t, r, sigma)
 
 # %% save c-hat
+print("MAE:", mean_absolute_error(c, c_hat))
 with open(f"raw/c-hat/miller", "wb") as f:
     pickle.dump(c_hat, f)
-
-# %% export MAE error
-with open(f"raw/c-hat/miller", "rb") as f:
-    c_hat = pickle.load(f)
-mae = mean_absolute_error(c, c_hat)
