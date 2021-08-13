@@ -9,7 +9,6 @@ def norm_cdf(x):
 with open("raw/options", "rb") as f:
     s, k, r, c, t = pickle.load(f)
 n_samples = s.shape[0]
-# n_steps = 3000
 n_steps = 2000
 
 s = tf.convert_to_tensor(s, dtype=tf.float32)
@@ -29,15 +28,7 @@ for init_sigma in np.linspace(.1, 1, 7):
             d2 = d1 - sigma * tf.math.sqrt(t)
             c_hat = s * norm_cdf(d1) - k * tf.exp(-r * t) * norm_cdf(d2)
             h = tf.square(c_hat - c)
-        # if step == 0:
         adam.minimize(h, [sigma], tape=tape)
         c_hat_np[:, step] = c_hat.numpy()
-        # else:
-        #     old_sigma = sigma.numpy()
-        #     adam.minimize(h, [sigma], tape=tape)
-        #     new_sigma = sigma.numpy()
-        #     c_hat_np[:, step] = c_hat.numpy()
-        #     suc_update = np.abs(c_hat_np[:, step-1] - c.numpy()) > np.abs(c_hat_np[:, step] - c.numpy())
-        #     sigma.assign(suc_update * new_sigma + (~suc_update) * old_sigma)
     with open(f"raw/c-hat/adam-{n_steps}-{format(init_sigma, '.2f')}", "wb") as f:
         pickle.dump(c_hat_np, f)
